@@ -1,7 +1,7 @@
 const miesmuschel = require("./miesmuschel.js")
 
 const tmi = require('tmi.js');
-const { channel } = require("tmi.js/lib/utils");
+//const { channel } = require("tmi.js/lib/utils");
 
 const client = new tmi.Client({
 	options: { 
@@ -32,34 +32,49 @@ client.connect();
 client.on('message', (channel, userstate, message, self) => {
 	if (self){ return };
 
-	(function(){
+	(function () {
+		if (message.startsWith("!miesmuschel")) {
+			var param = message.split(" ");
+			if (param.length == 0){
+				bot.say(channel, "no parameter");
+				return;
+			}
+			bot.say(channel, miesmuschel.Ask(userstate.username));
+		}
+	}());
+
+	(function () {
 		if (message.startsWith("!love")) {
 			var param = message.split(" ")
 			if (param.length == 0){
-				bot.say(channel, "no parameter")
+				bot.say(channel, "no parameter");
 				return;
 			}
 			
-			var usersplit = userstate.username.split("")
-			var userA = 0
+			var usersplit = userstate.username.split("");
+			var userA = 0;
 			for (const iterator of usersplit) {
-				userA += iterator.charCodeAt(0)
+				userA += iterator.charCodeAt(0);
 			}
-
-			usersplit = param[1].split(" ")
-			var userB = 0
+	
+			usersplit = param[1].split(" ");
+			var userB = 0;
 			for (const iterator of usersplit) {
-				userB += iterator.charCodeAt(0)
+				userB += iterator.charCodeAt(0);
 			}
-
-			var min = Math.min(userA,userB)
-			var max = Math.max(userA,userB)
-
-			let matching = Math.round((min/max)*100)
-
-			bot.say(channel, `@${userstate.username} and ${param[1]} love value is ${matching}%`)
+	
+			var min = Math.min(userA,userB);
+			var max = Math.max(userA,userB);
+	
+			let matching = Math.round((min/max)*100);
+	
+			bot.say(channel, `@${userstate.username} and ${param[1]} love value is ${matching}%`);
 		}
-	})()
+	}());
+
+
+
+
 });
 
 // ignore this its just to get output from anonymous login
