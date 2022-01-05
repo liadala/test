@@ -50,14 +50,14 @@ client.on('message', (channel, userstate, message, self) => {
 				bot.say(channel, "no parameter");
 				return;
 			}
-			
+
 			var usersplit = userstate.username.split("");
 			var userA = 0;
 			for (const iterator of usersplit) {
 				userA += iterator.charCodeAt(0);
 			}
 	
-			usersplit = param[1].split(" ");
+			usersplit = param[1].replace("@", "").split(" ");
 			var userB = 0;
 			for (const iterator of usersplit) {
 				userB += iterator.charCodeAt(0);
@@ -71,9 +71,6 @@ client.on('message', (channel, userstate, message, self) => {
 			bot.say(channel, `@${userstate.username} and ${param[1]} love value is ${matching}%`);
 		}
 	}());
-
-
-
 
 });
 
