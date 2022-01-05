@@ -39,6 +39,7 @@ client.on('message', (channel, userstate, message, self) => {
 				bot.say(channel, "no parameter")
 				return;
 			}
+			
 			var usersplit = userstate.username.split("")
 			var userA = 0
 			for (const iterator of usersplit) {
