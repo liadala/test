@@ -28,3 +28,9 @@ func Start() {
 		PRIMARY KEY("id")
 	);`)
 }
+
+func Stop() {
+	lock.Lock()
+	defer lock.Unlock()
+	db.Close()
+}
