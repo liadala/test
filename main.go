@@ -41,10 +41,21 @@ func main() {
 
 		client.OnPrivateMessage(func(message twitch.PrivateMessage) {
 			fmt.Println(message)
-
+			if message.User.Name == strings.ToLower(username) {
+				return
+			}
 			database.WriteUser(message.User.ID, message.User.Name, message.User.DisplayName)
 
 			var reply string = ""
+
+			// Broadcaster Permissions
+			if strings.ToLower(message.User.Name) == strings.ToLower(channel) {
+				if strings.HasPrefix(message.Message, "!test") {
+					reply = "blargh"
+				}
+			}
+
+
 			if strings.HasPrefix(message.Message, "!coin") {
 				if rand.Intn(100-0)+0 > 50 {
 					reply = fmt.Sprintf("@%s you flipped head", message.User.Name)
@@ -55,19 +66,18 @@ func main() {
 
 			if strings.HasPrefix(message.Message, "!love") {
 				var param []string = strings.Split(message.Message, " ")
-				if len(param) == 1 {
-					return
+				if len(param) != 1 {
+					var userA float64 = 0
+					var userB float64 = 0
+					for _, v := range []byte(message.User.Name) {
+						userA += float64(v)
+					}
+					for _, v := range []byte(param[1]) {
+						userB += float64(v)
+					}
+					var match float64 = ((math.Min(userA, userB) / math.Max(userA, userB)) * 100)
+					reply = fmt.Sprintf("You and %s have a love value of %.2f%s ", param[1], match, "%")
 				}
-				var userA float64 = 0
-				var userB float64 = 0
-				for _, v := range []byte(message.User.Name) {
-					userA += float64(v)
-				}
-				for _, v := range []byte(param[1]) {
-					userB += float64(v)
-				}
-				var match float64 = ((math.Min(userA, userB) / math.Max(userA, userB)) * 100)
-				reply = fmt.Sprintf("You and %s have a love value of %.2f%s ", param[1], match, "%")
 			}
 
 			if strings.HasPrefix(message.Message, "!miesmuschel") {
@@ -106,6 +116,7 @@ func main() {
 				reply = fmt.Sprintf("@%s %s", message.User.Name, quotes[rand.Intn(len(quotes)-0)+0])
 			}
 
+			// Here is Event to Ende do noch Schreib any other dings here
 			if reply != "" {
 				if isDebug {
 					fmt.Println(message.Channel, reply)
